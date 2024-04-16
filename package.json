@@ -34,5 +34,8 @@
     "setupFilesAfterEnv": [
       "jest-extended/all"
     ]
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security"
   }
 }
