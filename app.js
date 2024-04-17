@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const healthcheck = require("./controllers/healthcheck.controller");
 const { getTopics } = require("./controllers/topics.controller");
-const endpointsList = require("./endpoints.json");
+const getApi = require("./controllers/api.controller");
+const getArticleById = require("./controllers/articles.controller");
 
 app.use(express.json());
 
@@ -10,10 +11,10 @@ app.get("/api/healthcheck", healthcheck);
 
 app.get("/api/topics", getTopics);
 
-app.get("/api", (request, response) => {
-  response.status(200).send({ endpoints: endpointsList });
-});
+app.get("/api", getApi);
 
-app.all("*");
+app.get("/api/articles/:article_id", getArticleById);
+
+// app.all("*");
 
 module.exports = app;
