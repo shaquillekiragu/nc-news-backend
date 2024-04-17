@@ -19,12 +19,6 @@ describe("/api/healthcheck", () => {
   });
 });
 
-// describe("/api/nonexistentendpoint", () => {
-//   test("Checks for the input of a generic endpoint that does not exist", () => {
-//     return request(app).get("/api/nonexistentendpoint").expect(404);
-//   });
-// });
-
 describe("/api/topics", () => {
   test("GET 200 - Responds with a list of topics", () => {
     return request(app)
