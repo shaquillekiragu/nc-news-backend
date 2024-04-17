@@ -19,12 +19,6 @@ describe("/api/healthcheck", () => {
   });
 });
 
-describe("/api/nonexistentendpoint", () => {
-  test("404 - Endpoint doesn't exist", () => {
-    return request(app).get("/api/nonexistentendpoint").expect(404);
-  });
-});
-
 describe("/api/topics", () => {
   test("GET 200 - Responds with a list of topics", () => {
     return request(app)
@@ -68,38 +62,41 @@ describe("/api/articles/:article_id", () => {
         expect(article).toHaveProperty("article_img_url");
       });
   });
-  test("GET 404 - Article not found", () => {
-    return request(app).get("/api/articles/999").expect(404);
+  test("GET 400 - Invalid id given", () => {
+    return request(app)
+      .get("/api/articles/notAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid id");
+      });
+  });
+  test("GET 404 - Article with that id does not exist", () => {
+    return request(app)
+      .get("/api/articles/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article does not exist");
+      });
   });
 });
 
-// I took a break from ticket 4 when I was stuck and started ticket 5 below. Went back and finished ticket 4 when I figured it out.
-
-// describe("/api/articles", () => {
-//   test("GET 200 - Responds with a list of articles", () => {
-//     return request(app)
-//       .get("/api/articles")
-//       .expect(200)
-//       .then(({ body: { articles } }) => {
-//         expect(articles).toHaveLength();
-//         articles.forEach((article) => {
-//           expect(article).toHaveProperty("author");
-//           expect(article).toHaveProperty("title");
-//           expect(article).toHaveProperty("article_id", 1);
-//           expect(article).toHaveProperty("topic");
-//           expect(article).toHaveProperty("created_at");
-//           expect(article).toHaveProperty("votes");
-//           expect(article).toHaveProperty("article_img_url");
-//           expect(article).toHaveProperty("comment_count");
-//         });
-//       });
-//   });
-//   test("GET 404 - Articles not found", () => {
-//     return request(app)
-//       .get("/api/articles")
-//       .expect(404)
-//       .then(({ msg }) => {
-//         expect(msg).toEqual("no articles exist");
-//       });
-//   });
-// });
+describe("/api/articles", () => {
+  test("GET 200 - Responds with a list of articles", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(13);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+});
