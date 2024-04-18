@@ -95,6 +95,6 @@
   "DELETE /api/comments/:comment_id": {
     "description": "serves the deleted comment object that has the given comment_id",
     "queries": [],
-    "exampleResponse":
+    "exampleResponse": {}
   }
 }
