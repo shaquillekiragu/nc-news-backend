@@ -77,6 +77,34 @@ describe("/api/articles/:article_id", () => {
         expect(msg).toBe("Article does not exist");
       });
   });
+  test("PATCH 200 - Responds with an article that has a correctly updated vote count", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 50 })
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body).toHaveProperty("votes", 150);
+      });
+  });
+  test("PATCH 400 - Empty increment votes object received", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("PATCH 400 - Failing schema validation", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "string" })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
 });
 
 describe("/api/articles", () => {
@@ -159,7 +187,6 @@ describe("/api/articles/:article_id/comments", () => {
         expect(msg).toBe("Bad Request");
       });
   });
-
   test("POST 400 - Failing schema validation", () => {
     return request(app)
       .post("/api/articles/1/comments")
