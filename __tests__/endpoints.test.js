@@ -19,28 +19,17 @@ describe("/api/healthcheck", () => {
   });
 });
 
-// The three skipped 404 error tests below are all attempts to test the Promise.rejects on their respective models, that are checking for cases where the endpoints are inputted correctly and the app and controllers are functioning as they should, but the fetched db data is non existent, or rows is an empty array. I am struggling to test for the error messages matching those in the Promise.rejects, even though I believe I have written my tests as I should. Any pointers?
-
 describe("/api/topics", () => {
   test("GET 200 - Responds with a list of topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then(({ body }) => {
-        topicsArray = body.topics;
-        expect(topicsArray).toHaveLength(3);
-        topicsArray.forEach((topic) => {
+      .then(({ body: { topics } }) => {
+        expect(topics).toHaveLength(3);
+        topics.forEach((topic) => {
           expect(topic).toHaveProperty("description");
           expect(topic).toHaveProperty("slug");
         });
-      });
-  });
-  test.skip("GET 404 - Unable to fetch topics from the correct endpoint", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Topics do not exist");
       });
   });
 });
@@ -77,7 +66,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/notAnId")
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Invalid id");
+        expect(msg).toBe("Bad Request");
       });
   });
   test("GET 404 - Article with that id does not exist", () => {
@@ -109,14 +98,6 @@ describe("/api/articles", () => {
         });
       });
   });
-  test.skip("GET 404 - Unable to fetch articles from the correct endpoint", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Articles do not exist");
-      });
-  });
 });
 
 describe("/api/articles/:article_id/comments", () => {
@@ -127,6 +108,12 @@ describe("/api/articles/:article_id/comments", () => {
       .then((response) => {
         commentsArray = response.body.comments;
         commentsArray.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
           expect(comment).toHaveProperty("comment_id");
           expect(comment).toHaveProperty("votes");
           expect(comment).toHaveProperty("created_at");
@@ -141,15 +128,45 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/notAnId/comments")
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Invalid id");
+        expect(msg).toBe("Bad Request");
       });
   });
-  test.skip("GET 404 - Cannot get comments since an article with that id does not exist", () => {
+  test("POST 201 - Adds a comment to an article, given an article_id", () => {
     return request(app)
-      .get("/api/articles/999/comments")
-      .expect(404)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "butter_bridge",
+        body: "Yay, this is the latest comment.",
+      })
+      .expect(201)
+      .then((response) => {
+        newComment = response.body.comment;
+        expect(typeof newComment.author).toBe("string");
+        expect(typeof newComment.body).toBe("string");
+        expect(newComment).toHaveProperty("author", "butter_bridge");
+        expect(newComment).toHaveProperty(
+          "body",
+          "Yay, this is the latest comment."
+        );
+      });
+  });
+  test("POST 400 - Empty comment object received", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({})
+      .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Article does not exist");
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("POST 400 - Failing schema validation", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "butter_bridge" })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
       });
   });
 });

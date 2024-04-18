@@ -42,11 +42,31 @@ function fetchCommentsByArticleId(article_id) {
       [article_id]
     )
     .then(({ rows }) => {
-      if (!rows) {
+      if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Article does not exist" });
       }
       return rows;
     });
 }
 
-module.exports = { fetchArticleById, fetchArticles, fetchCommentsByArticleId };
+function insertCommentByArticleId(username, body, article_id) {
+  return db
+    .query(
+      `INSERT INTO comments
+    (author, body, article_id)
+    VALUES
+    ($1, $2, $3)
+    RETURNING *;`,
+      [username, body, article_id]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+}
+
+module.exports = {
+  fetchArticleById,
+  fetchArticles,
+  fetchCommentsByArticleId,
+  insertCommentByArticleId,
+};
