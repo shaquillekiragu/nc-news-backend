@@ -53,10 +53,10 @@ function insertCommentByArticleId(username, body, article_id) {
   return db
     .query(
       `INSERT INTO comments
-    (author, body, article_id)
-    VALUES
-    ($1, $2, $3)
-    RETURNING *;`,
+      (author, body, article_id)
+      VALUES
+      ($1, $2, $3)
+      RETURNING *;`,
       [username, body, article_id]
     )
     .then(({ rows }) => {
@@ -74,6 +74,12 @@ function updateVotesByArticleId(inc_votes, article_id) {
       [inc_votes, article_id]
     )
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Article with given id does not exist",
+        });
+      }
       return rows[0];
     });
 }

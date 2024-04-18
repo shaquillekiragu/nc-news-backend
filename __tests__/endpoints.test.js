@@ -83,7 +83,6 @@ describe("/api/articles/:article_id", () => {
       .send({ inc_votes: 50 })
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body).toHaveProperty("votes", 150);
       });
   });
@@ -194,6 +193,28 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  test("DELETE 204 - Responds with a 204 status code for the deleted comment with the given comment_id", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("DELETE 400 - Invalid id given", () => {
+    return request(app)
+      .delete("/api/comments/notAnId")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("DELETE 404 - Comment with that id does not exist", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Comment with that id does not exist");
       });
   });
 });
