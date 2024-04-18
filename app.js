@@ -10,6 +10,7 @@ const {
   postCommentByArticleId,
   patchVotesByArticleId,
 } = require("./controllers/articles.controller");
+const deleteCommentById = require("./controllers/comments.controller");
 
 app.use(express.json());
 
@@ -30,6 +31,8 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.patch("/api/articles/:article_id", patchVotesByArticleId);
+
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 app.all("*", (request, response) => {
   response(404).send({ msg: "Endpoint not found" });
