@@ -65,5 +65,15 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves a newly created comment object for an article using a given article id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "username": "butter_bridge",
+        "body": "Yay, this is the latest comment."
+      }
+    }
   }
 }

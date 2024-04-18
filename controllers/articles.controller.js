@@ -2,6 +2,7 @@ const {
   fetchArticleById,
   fetchArticles,
   fetchCommentsByArticleId,
+  insertCommentByArticleId,
 } = require("../models/articles.model");
 
 function getArticleById(request, response, next) {
@@ -30,4 +31,19 @@ function getCommentsByArticleId(request, response, next) {
     .catch(next);
 }
 
-module.exports = { getArticleById, getArticles, getCommentsByArticleId };
+function postCommentByArticleId(request, response, next) {
+  const { article_id } = request.params;
+  const { username, body } = request.body;
+  insertCommentByArticleId(username, body, article_id)
+    .then((comment) => {
+      response.status(201).send({ comment });
+    })
+    .catch(next);
+}
+
+module.exports = {
+  getArticleById,
+  getArticles,
+  getCommentsByArticleId,
+  postCommentByArticleId,
+};
