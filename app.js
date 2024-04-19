@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const healthcheck = require("./controllers/healthcheck.controller");
-const { getTopics } = require("./controllers/topics.controller");
+const getTopics = require("./controllers/topics.controller");
 const getApi = require("./controllers/api.controller");
 const {
   getArticleById,
@@ -15,7 +15,7 @@ const getUsers = require("./controllers/users.controller");
 
 app.use(express.json());
 
-// Endpoints
+// ENDPOINTS:
 
 app.get("/api/healthcheck", healthcheck);
 

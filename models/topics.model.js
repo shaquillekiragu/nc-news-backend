@@ -6,4 +6,4 @@ function fetchTopics() {
   });
 }
 
-module.exports = { fetchTopics };
+module.exports = fetchTopics;

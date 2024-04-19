@@ -27,8 +27,8 @@ describe("/api/topics", () => {
       .then(({ body: { topics } }) => {
         expect(topics).toHaveLength(3);
         topics.forEach((topic) => {
-          expect(topic).toHaveProperty("description");
-          expect(topic).toHaveProperty("slug");
+          expect(typeof topic.description).toBe("string");
+          expect(typeof topic.slug).toBe("string");
         });
       });
   });
@@ -74,7 +74,7 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/999")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Article does not exist");
+        expect(msg).toBe("Article not found");
       });
   });
   test("PATCH 200 - Responds with an article that has a correctly updated vote count", () => {
@@ -82,8 +82,14 @@ describe("/api/articles/:article_id", () => {
       .patch("/api/articles/1")
       .send({ inc_votes: 50 })
       .expect(200)
-      .then(({ body }) => {
-        expect(body).toHaveProperty("votes", 150);
+      .then(({ body: { article } }) => {
+        expect(article).toHaveProperty("votes", 150);
+        expect(article).toHaveProperty("author");
+        expect(article).toHaveProperty("title");
+        expect(article).toHaveProperty("article_id", 1);
+        expect(article).toHaveProperty("body");
+        expect(article).toHaveProperty("topic");
+        expect(article).toHaveProperty("article_img_url");
       });
   });
   test("PATCH 400 - Empty increment votes object received", () => {
@@ -102,6 +108,24 @@ describe("/api/articles/:article_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad Request");
+      });
+  });
+  test("PATCH 400 - Invalid id given", () => {
+    return request(app)
+      .patch("/api/articles/notAnId")
+      .send({ inc_votes: 50 })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("PATCH 404 - Article with that id does not exist", () => {
+    return request(app)
+      .patch("/api/articles/999")
+      .send({ inc_votes: 50 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
       });
   });
 });
@@ -132,21 +156,14 @@ describe("/api/articles/:article_id/comments", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
-      .then((response) => {
-        commentsArray = response.body.comments;
-        commentsArray.forEach((comment) => {
+      .then(({ body: { comments } }) => {
+        comments.forEach((comment) => {
           expect(typeof comment.comment_id).toBe("number");
           expect(typeof comment.votes).toBe("number");
           expect(typeof comment.created_at).toBe("string");
           expect(typeof comment.author).toBe("string");
           expect(typeof comment.body).toBe("string");
           expect(typeof comment.article_id).toBe("number");
-          expect(comment).toHaveProperty("comment_id");
-          expect(comment).toHaveProperty("votes");
-          expect(comment).toHaveProperty("created_at");
-          expect(comment).toHaveProperty("author");
-          expect(comment).toHaveProperty("body");
-          expect(comment).toHaveProperty("article_id");
         });
       });
   });
@@ -214,7 +231,7 @@ describe("/api/comments/:comment_id", () => {
       .delete("/api/comments/999")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Comment with that id does not exist");
+        expect(msg).toBe("Comment not found");
       });
   });
 });
@@ -227,13 +244,56 @@ describe("/api/users", () => {
       .then(({ body: { users } }) => {
         expect(users).toHaveLength(4);
         users.forEach((user) => {
-          expect(user).toHaveProperty("username");
-          expect(user).toHaveProperty("name");
-          expect(user).toHaveProperty("avatar_url");
           expect(typeof user.username).toBe("string");
           expect(typeof user.name).toBe("string");
           expect(typeof user.avatar_url).toBe("string");
         });
+      });
+  });
+});
+
+describe("/api/articles?", () => {
+  test("GET 200 - Responds with a list of articles with a topic value of cats", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        articles.forEach((article) => {
+          expect(article.topic).toEqual("cats");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("body");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("article_img_url");
+        });
+      });
+  });
+  test("GET 200 - Responds with a list if all articles if no query given after query character", () => {
+    // Would this case still expect a 200 status code? Or a 400?
+    return request(app)
+      .get("/api/articles?")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(13);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+  test("GET 404 - Invalid query value given. No article with that topic", () => {
+    return request(app)
+      .get("/api/articles?topic=nonExistent")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
       });
   });
 });
