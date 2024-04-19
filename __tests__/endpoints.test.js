@@ -128,6 +128,21 @@ describe("/api/articles/:article_id", () => {
         expect(msg).toBe("Article not found");
       });
   });
+  test("GET 200 - Responds with a single article, this time with a comment_count, by article_id ", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toHaveProperty("author");
+        expect(article).toHaveProperty("title");
+        expect(article).toHaveProperty("article_id");
+        expect(article).toHaveProperty("topic");
+        expect(article).toHaveProperty("created_at");
+        expect(article).toHaveProperty("votes");
+        expect(article).toHaveProperty("article_img_url");
+        expect(article).toHaveProperty("comment_count");
+      });
+  });
 });
 
 describe("/api/articles", () => {
