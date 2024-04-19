@@ -11,6 +11,7 @@ const {
   patchVotesByArticleId,
 } = require("./controllers/articles.controller");
 const deleteCommentById = require("./controllers/comments.controller");
+const getUsers = require("./controllers/users.controller");
 
 app.use(express.json());
 
@@ -33,6 +34,8 @@ app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 app.patch("/api/articles/:article_id", patchVotesByArticleId);
 
 app.delete("/api/comments/:comment_id", deleteCommentById);
+
+app.get("/api/users", getUsers);
 
 app.all("*", (request, response) => {
   response(404).send({ msg: "Endpoint not found" });
