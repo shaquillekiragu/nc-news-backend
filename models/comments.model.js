@@ -12,7 +12,7 @@ function removeCommentById(comment_id) {
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: "Comment with that id does not exist",
+          msg: "Comment not found",
         });
       }
       return rows[0];

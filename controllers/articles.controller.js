@@ -5,6 +5,7 @@ const {
   insertCommentByArticleId,
   updateVotesByArticleId,
 } = require("../models/articles.model");
+const fetchTopics = require("../models/topics.model");
 
 function getArticleById(request, response, next) {
   const { article_id } = request.params;
@@ -16,7 +17,8 @@ function getArticleById(request, response, next) {
 }
 
 function getArticles(request, response, next) {
-  fetchArticles()
+  const query = request.query;
+  fetchArticles(query, fetchTopics())
     .then((articles) => {
       response.status(200).send({ articles });
     })
@@ -47,7 +49,7 @@ function patchVotesByArticleId(request, response, next) {
   const { inc_votes } = request.body;
   updateVotesByArticleId(inc_votes, article_id)
     .then((article) => {
-      response.status(200).send(article);
+      response.status(200).send({ article });
     })
     .catch(next);
 }
