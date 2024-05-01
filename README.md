@@ -1,4 +1,4 @@
-# Reddit Newspage API
+# Reddit Newspage Backend Server
 
 ## Description
 
@@ -8,7 +8,7 @@ This project is the backend of a reddit-inspired newspage application, providing
 
 The link to the hosted version of this backend server: https://news-webpage-project.onrender.com
 
-## Minimal Versions
+## Minimum Versions
 
 You will need to have these versions or later for the following dependencies in order to run this project:
 
