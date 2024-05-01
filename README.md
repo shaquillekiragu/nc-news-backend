@@ -2,16 +2,69 @@
 
 ## Description
 
-This project is the backend of a reddit-inspired newspage application, providing the data that the frontend of a completed fullstack application would request from it.
+This project is the backend of a reddit-inspired newspage application, providing the data that the frontend of a completed fullstack application would request from it. As my first ever complete backend server project, I hope to use this as a demonstration of all my learning up to this point, as well as as a display of my current capabilities and foundation for my learning journey in backend development.
 
-## Hosted Repository
+## Hosted Backend Server
 
-The link to the hosted version of this repository's backend: https://news-webpage-project.onrender.com
+The link to the hosted version of this backend server: https://news-webpage-project.onrender.com
 
-## Installation:
+## Minimal Versions
+
+You will need to have these versions or later for the following dependencies in order to run this project:
+
+- Node.js v14.18.0 or later
+- Postgres v20.x or later
+
+## Installation
+
+Installation Instructions:
 
 1. Clone this repository:
 
 ```
 https://github.com/shaquillekiragu/reddit-newspage-project.git
 ```
+
+2. Once you've opened the repo, at the repository's root create an `.env.test` and `.env.development` file, and declare the variable below in each .env file, assigning the corresponding values to each variable as shown below.
+
+.env.test:
+
+```
+PGDATABASE=nc_news_test
+```
+
+.env.development:
+
+```
+PGDATABASE=nc_news_development
+```
+
+3. To install all of the required dependencies for this repo locally, run this command:
+
+```
+npm install
+```
+
+4. Next, create the test and development databases by running:
+
+```
+npm run setup-dbs
+```
+
+5. And now seed the databases with this command:
+
+```
+npm run seed
+```
+
+Installation is now complete.
+
+## Testing
+
+In order to test the api endpoints on this server, run the following command:
+
+```
+npm run test
+```
+
+This command will run the integration tests for the api endpoints, as well as the utilities tests for the seeding functions.
