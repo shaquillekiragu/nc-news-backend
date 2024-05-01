@@ -1,5 +1,17 @@
-# Northcoders News API
+# Reddit Newspage API
 
-In order to successfully connect to the two databases locally, you need to create the files ".env.test" and ".env.development" at the root of your repository.
+## Description
 
-When you have done this, copy the example variable in the existing .env-example file, and paste them into the created files above, replacing the variable value "database_name_here" with "nc_news_test" in .env.test, and with "nc_news_development" in .env.development.
+This project is the backend of a reddit-inspired newspage application, providing the data that the frontend of a completed fullstack application would request from it.
+
+## Hosted Repository
+
+The link to the hosted version of this repository's backend: https://news-webpage-project.onrender.com
+
+## Installation:
+
+1. Clone this repository:
+
+```
+https://github.com/shaquillekiragu/reddit-newspage-project.git
+```
