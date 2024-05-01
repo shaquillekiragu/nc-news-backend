@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is the backend of a reddit-inspired newspage application, providing the data that the frontend of a completed fullstack application would request from it. As my first ever complete backend server project, I hope to use this as a demonstration of all my learning up to this point, as well as as a display of my current capabilities and foundation for my learning journey in backend development.
+This project is the backend of a Reddit-inspired newspage application, providing the data that the frontend of a completed full-stack application would request from it. As my first ever complete backend server project, I aim to use this as a demonstration of all my learning up to this point, as well as a display of my current capabilities and foundation for my learning journey in backend development.
 
 ## Hosted Backend Server
 
@@ -12,12 +12,12 @@ The link to the hosted version of this backend server: https://news-webpage-proj
 
 You will need to have these versions or later for the following dependencies in order to run this project:
 
-- Node.js v14.18.0 or later
-- Postgres v20.x or later
+- Node.js **v14.18.0** or later
+- PostgreSQL **v20.x** or later
 
 ## Installation
 
-Installation Instructions:
+**Instructions:**
 
 1. Clone this repository:
 
@@ -25,15 +25,15 @@ Installation Instructions:
 https://github.com/shaquillekiragu/reddit-newspage-project.git
 ```
 
-2. Once you've opened the repo, at the repository's root create an `.env.test` and `.env.development` file, and declare the variable below in each .env file, assigning the corresponding values to each variable as shown below.
+2. Once you've opened the repo, at the repository's root create a `.env.test` and `.env.development` file, and declare the variable below in each .env file, assigning the corresponding values to each variable as shown below.
 
-.env.test:
+**.env.test:**
 
 ```
 PGDATABASE=nc_news_test
 ```
 
-.env.development:
+**.env.development:**
 
 ```
 PGDATABASE=nc_news_development
