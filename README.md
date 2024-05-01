@@ -12,8 +12,8 @@ The link to the hosted version of this backend server: https://news-webpage-proj
 
 You will need to have these versions or later for the following dependencies in order to run this project:
 
-- Node.js **v14.18.0** or later
-- PostgreSQL **v20.x** or later
+- Node.js - **v14.18.0** or later
+- PostgreSQL - **v20.x** or later
 
 ## Installation
 
@@ -27,13 +27,13 @@ https://github.com/shaquillekiragu/reddit-newspage-project.git
 
 2. Once you've opened the repo, at the repository's root create a `.env.test` and `.env.development` file, and declare the variable below in each .env file, assigning the corresponding values to each variable as shown below.
 
-**.env.test:**
+.env.test:
 
 ```
 PGDATABASE=nc_news_test
 ```
 
-**.env.development:**
+.env.development:
 
 ```
 PGDATABASE=nc_news_development
