@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const healthcheck = require("./controllers/healthcheck.controller");
 const getTopics = require("./controllers/topics.controller");
@@ -14,6 +15,8 @@ const deleteCommentById = require("./controllers/comments.controller");
 const getUsers = require("./controllers/users.controller");
 
 app.use(express.json());
+
+app.use(cors());
 
 // ENDPOINTS:
 
