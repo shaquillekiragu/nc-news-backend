@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const fetchTopics = require("./topics.model");
 
 function fetchArticleById(article_id) {
   return db
@@ -23,21 +24,6 @@ function fetchArticleById(article_id) {
 }
 
 function fetchArticles(query) {
-  // Was previously passing "fetchTopics" above
-  const validQueryValues = [];
-
-  // fetchTopics().then((rows) => {
-  //   rows.forEach((row) => {
-  //     validQueryValues.push(row.slug);
-  //   });
-  // });
-
-  validQueryValues.push("mitch");
-  validQueryValues.push("cats");
-  validQueryValues.push("paper");
-
-  // Attempted to use the rows from fetchTopics to fetch and push each topic value onto validQueryValues, but I've spent too long trying to polish up this task (I've been one test left to pass for hours now), so I'm currently hard-coding and moving on. This is the reason for lines 28-30.
-
   if (Object.keys(query).length === 0) {
     return db
       .query(
@@ -51,19 +37,22 @@ function fetchArticles(query) {
       )
       .then(({ rows }) => {
         if (rows.length === 0) {
-          return Promise.reject({ status: 404, msg: "Article not found" });
+          return Promise.reject({ status: 404, msg: "Articles not found" });
         }
         return rows;
       });
-  } else if (
-    Object.keys(query).length > 0 &&
-    !validQueryValues.includes(query.topic)
-  ) {
-    return Promise.reject({ status: 404, msg: "Article not found" });
   }
-  return db
-    .query(
-      `SELECT articles.*, COUNT(comments.article_id) 
+  return fetchTopics()
+    .then((fetchedRows) => {
+      const matchingRows = fetchedRows.filter((row) => {
+        return row.slug === query.topic;
+      });
+      if (!matchingRows.length) {
+        return Promise.reject({ status: 404, msg: "Articles not found" });
+      }
+      const topicInRows = matchingRows[0].slug;
+      return db.query(
+        `SELECT articles.*, COUNT(comments.article_id) 
     AS comment_count 
     FROM articles 
     LEFT JOIN comments 
@@ -71,11 +60,12 @@ function fetchArticles(query) {
     WHERE topic = $1
     GROUP BY articles.article_id 
     ORDER BY articles.created_at DESC;`,
-      [query.topic]
-    )
+        [topicInRows]
+      );
+    })
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Article not found" });
+        return Promise.reject({ status: 404, msg: "Articles not found" });
       }
       return rows;
     });

@@ -308,7 +308,7 @@ describe("/api/articles?", () => {
       .get("/api/articles?topic=nonExistent")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Article not found");
+        expect(msg).toBe("Articles not found");
       });
   });
 });
