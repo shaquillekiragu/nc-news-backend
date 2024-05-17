@@ -5,7 +5,6 @@ const {
   insertCommentByArticleId,
   updateVotesByArticleId,
 } = require("../models/articles.model");
-const fetchTopics = require("../models/topics.model");
 
 function getArticleById(request, response, next) {
   const { article_id } = request.params;
@@ -18,7 +17,7 @@ function getArticleById(request, response, next) {
 
 function getArticles(request, response, next) {
   const query = request.query;
-  fetchArticles(query, fetchTopics())
+  fetchArticles(query)
     .then((articles) => {
       response.status(200).send({ articles });
     })

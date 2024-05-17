@@ -1,9 +1,10 @@
-const app = require("../app");
-const db = require("../db/connection");
+const app = require("../app.js");
+const db = require("../db/connection.js");
 const request = require("supertest");
-const seed = require("../db/seeds/seed");
+const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data/index.js");
 const endpointsList = require("../endpoints.json");
+require("jest-sorted");
 
 beforeEach(() => {
   return seed(data);
@@ -39,8 +40,8 @@ describe("/api", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then(({ body }) => {
-        expect(body.endpoints).toEqual(endpointsList);
+      .then(({ body: { endpoints } }) => {
+        expect(endpoints).toEqual(endpointsList);
       });
   });
 });
@@ -198,12 +199,11 @@ describe("/api/articles/:article_id/comments", () => {
         body: "Yay, this is the latest comment.",
       })
       .expect(201)
-      .then((response) => {
-        newComment = response.body.comment;
-        expect(typeof newComment.author).toBe("string");
-        expect(typeof newComment.body).toBe("string");
-        expect(newComment).toHaveProperty("author", "butter_bridge");
-        expect(newComment).toHaveProperty(
+      .then(({ body: { comment } }) => {
+        expect(typeof comment.author).toBe("string");
+        expect(typeof comment.body).toBe("string");
+        expect(comment).toHaveProperty("author", "butter_bridge");
+        expect(comment).toHaveProperty(
           "body",
           "Yay, this is the latest comment."
         );
@@ -267,7 +267,7 @@ describe("/api/users", () => {
   });
 });
 
-describe("/api/articles?", () => {
+describe("/api/articles?topic=", () => {
   test("GET 200 - Responds with a list of articles with a topic value of cats", () => {
     return request(app)
       .get("/api/articles?topic=cats")
@@ -311,4 +311,52 @@ describe("/api/articles?", () => {
         expect(msg).toBe("Articles not found");
       });
   });
+});
+
+describe("/api/articles?sort=", () => {
+  test("GET 200 - Responds with a list of articles sorted by the specified column and order", () => {
+    return request(app)
+      .get("/api/articles?sort=+title")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted("title", { ascending: true });
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+  //   test("GET 200 - Responds with a list if all articles if no query given after query character", () => {
+  //     // Would this case still expect a 200 status code? Or a 400?
+  //     return request(app)
+  //       .get("/api/articles?")
+  //       .expect(200)
+  //       .then(({ body: { articles } }) => {
+  //         expect(articles).toHaveLength(13);
+  //         articles.forEach((article) => {
+  //           expect(article).toHaveProperty("author");
+  //           expect(article).toHaveProperty("title");
+  //           expect(article).toHaveProperty("article_id");
+  //           expect(article).toHaveProperty("topic");
+  //           expect(article).toHaveProperty("created_at");
+  //           expect(article).toHaveProperty("votes");
+  //           expect(article).toHaveProperty("article_img_url");
+  //           expect(article).toHaveProperty("comment_count");
+  //         });
+  //       });
+  //   });
+  //   test("GET 404 - Invalid query value given. No article with that topic", () => {
+  //     return request(app)
+  //       .get("/api/articles?topic=nonExistent")
+  //       .expect(404)
+  //       .then(({ body: { msg } }) => {
+  //         expect(msg).toBe("Articles not found");
+  //       });
+  //   });
 });
