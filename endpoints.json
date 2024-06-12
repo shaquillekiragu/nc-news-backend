@@ -28,7 +28,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["author", "topic", "sort", "order"],
     "exampleResponse": {
       "articles": [
         {
@@ -67,37 +67,6 @@
       ]
     }
   },
-  "POST /api/articles/:article_id/comments": {
-    "description": "serves a newly created comment object for an article using a given article id",
-    "queries": [],
-    "exampleResponse": {
-      "comment": {
-        "username": "butter_bridge",
-        "body": "Yay, this is the latest comment."
-      }
-    }
-  },
-  "PATCH /api/articles/:article_id": {
-    "description": "serves a newly updated article object using a given article id",
-    "queries": [],
-    "exampleResponse": {
-      "article": {
-        "article_id": 1,
-        "title": "Living in the shadow of a great man",
-        "topic": "mitch",
-        "author": "butter_bridge",
-        "body": "I find this existence challenging",
-        "created_at": "2020-07-09T20:11:00.000Z",
-        "votes": 150,
-        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-      }
-    }
-  },
-  "DELETE /api/comments/:comment_id": {
-    "description": "serves the deleted comment object that has the given comment_id",
-    "queries": [],
-    "exampleResponse": {}
-  },
   "GET /api/users": {
     "description": "serves an array of all users",
     "queries": [],
@@ -122,6 +91,14 @@
     "exampleResponse": {
       "articles": [
         {
+          "title": "UNCOVERED: catspiracy to bring down democracy 2",
+          "topic": "cats",
+          "author": "rogersop",
+          "body": "Bastet walks amongst us, and the cats are taking arms!",
+          "created_at": 1597464040001,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        },
+        {
           "title": "UNCOVERED: catspiracy to bring down democracy",
           "topic": "cats",
           "author": "rogersop",
@@ -131,5 +108,112 @@
         }
       ]
     }
+  },
+  "GET /api/articles?sort=-votes": {
+    "description": "serves an array of all articles sorted by the specified column in the specified order",
+    "queries": ["sort"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "React down, now onto Angular.js!",
+          "topic": "coding",
+          "author": "butter_bridge",
+          "body": "Text from the article..",
+          "created_at": "2019-05-30T15:59:13.341Z",
+          "votes": 1,
+          "comment_count": 6
+        },
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }
+  },
+  "GET /api/articles?topic=cooking&sort=-votes": {
+    "description": "serves an array of all articles with the given topic query, sorted by the specified column in the specified order",
+    "queries": ["topic", "sort"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Dairy substitutions are increasing",
+          "topic": "cooking",
+          "author": "butter_bridge",
+          "body": "Text from the article..",
+          "created_at": "2019-05-30T15:59:13.341Z",
+          "votes": 1,
+          "comment_count": 6
+        },
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves a newly created comment object for an article using a given article id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "username": "butter_bridge",
+        "body": "Yay, this is the latest comment."
+      }
+    }
+  },
+  "POST /api/users": {
+    "description": "serves a newly created user object, given inputted information from the user",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "username": "shaqk",
+        "name": "Shaq K",
+        "avatar_url": "https://a.com/random/url"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves a newly updated article object using a given article id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 150,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id/comments/:comment_id": {
+    "description": "serves a newly updated comment object using a given comment id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "body": "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+        "votes": -1,
+        "author": "tickle122",
+        "article_id": 18,
+        "created_at": 1590103140000
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "serves the deleted comment object that has the given comment_id",
+    "queries": [],
+    "exampleResponse": {}
   }
 }

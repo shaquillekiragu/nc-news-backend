@@ -1,10 +1,10 @@
 const {
   fetchArticleById,
-  fetchArticles,
   fetchCommentsByArticleId,
   insertCommentByArticleId,
   updateVotesByArticleId,
 } = require("../models/articles.model");
+const fetchArticles = require("../models/fetchArticles.model");
 
 function getArticleById(request, response, next) {
   const { article_id } = request.params;

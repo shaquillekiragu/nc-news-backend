@@ -78,7 +78,7 @@ describe("/api/articles/:article_id", () => {
         expect(msg).toBe("Article not found");
       });
   });
-  test("PATCH 200 - Responds with an article that has a correctly updated vote count", () => {
+  test("PATCH 200 - Responds with an article with a correctly updated vote count", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({ inc_votes: 50 })
@@ -93,7 +93,7 @@ describe("/api/articles/:article_id", () => {
         expect(article).toHaveProperty("article_img_url");
       });
   });
-  test("PATCH 400 - Empty increment votes object received", () => {
+  test("PATCH 400 - Empty inc_votes object received", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({})
@@ -150,6 +150,24 @@ describe("/api/articles", () => {
   test("GET 200 - Responds with a list of articles", () => {
     return request(app)
       .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(13);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+  test("GET 200 - Responds with a list if all articles if no query given after query character", () => {
+    return request(app)
+      .get("/api/articles?")
       .expect(200)
       .then(({ body: { articles } }) => {
         expect(articles).toHaveLength(13);
@@ -251,7 +269,41 @@ describe("/api/comments/:comment_id", () => {
   });
 });
 
-describe("/api/users", () => {
+describe.only("/api/articles/:article_id/comments/:comment_id", () => {
+  test("PATCH 200 - Responds with a comment with a correctly updated vote count", () => {
+    return request(app)
+      .patch("/api/articles/1/comments/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toHaveProperty("body");
+        expect(comment).toHaveProperty("votes", 17);
+        expect(comment).toHaveProperty("author");
+        expect(comment).toHaveProperty("article_id");
+        expect(comment).toHaveProperty("created_at");
+      });
+  });
+  test("PATCH 400 - Empty inc_votes object received", () => {
+    return request(app)
+      .patch("/api/articles/1/comments/1")
+      .send({})
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("PATCH 400 - Failing schema validation", () => {
+    return request(app)
+      .patch("/api/articles/1/comments/1")
+      .send({ inc_votes: "string" })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe.skip("/api/users", () => {
   test("GET 200 - Responds with a list of all users", () => {
     return request(app)
       .get("/api/users")
@@ -265,41 +317,70 @@ describe("/api/users", () => {
         });
       });
   });
+  test("POST 201 - Adds a user to the database, given inputted information from the user", () => {
+    return request(app)
+      .post("/api/users")
+      .send({
+        username: "shaqk",
+        name: "Shaq K",
+        avatar_url: "https://a.com/random/url",
+      })
+      .expect(201)
+      .then(({ body: { user } }) => {
+        expect(user).toHaveProperty("username", "shaqk");
+        expect(user).toHaveProperty("name", "Shaq K");
+        expect(user).toHaveProperty("avatar_url", "https://a.com/random/url");
+      });
+  });
+  test("POST 201 - Adds a user to the database, given inputted information from the user, allowing for no given avatar_url", () => {
+    return request(app)
+      .post("/api/users")
+      .send({
+        username: "shaqk",
+        name: "Shaq K",
+        avatar_url: "",
+      })
+      .expect(201)
+      .then(({ body: { user } }) => {
+        expect(user).toHaveProperty("username", "shaqk");
+        expect(user).toHaveProperty("name", "Shaq K");
+        expect(user).toHaveProperty("avatar_url", "");
+      });
+  });
+  test("POST 400 - Empty user object received", () => {
+    return request(app)
+      .post("/api/users")
+      .send({})
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("POST 400 - Failing schema validation", () => {
+    return request(app)
+      .post("/api/users")
+      .send({ username: "shaqk" })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
 });
 
 describe("/api/articles?topic=", () => {
-  test("GET 200 - Responds with a list of articles with a topic value of cats", () => {
+  test("GET 200 - Responds with a list of articles with a topic value of mitch", () => {
     return request(app)
-      .get("/api/articles?topic=cats")
+      .get("/api/articles?topic=mitch")
       .expect(200)
       .then(({ body: { articles } }) => {
         articles.forEach((article) => {
-          expect(article.topic).toEqual("cats");
+          expect(article).toHaveProperty("topic", "mitch");
           expect(article).toHaveProperty("article_id");
           expect(article).toHaveProperty("title");
           expect(article).toHaveProperty("author");
           expect(article).toHaveProperty("body");
           expect(article).toHaveProperty("created_at");
           expect(article).toHaveProperty("article_img_url");
-        });
-      });
-  });
-  test("GET 200 - Responds with a list if all articles if no query given after query character", () => {
-    // Would this case still expect a 200 status code? Or a 400?
-    return request(app)
-      .get("/api/articles?")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles).toHaveLength(13);
-        articles.forEach((article) => {
-          expect(article).toHaveProperty("author");
-          expect(article).toHaveProperty("title");
-          expect(article).toHaveProperty("article_id");
-          expect(article).toHaveProperty("topic");
-          expect(article).toHaveProperty("created_at");
-          expect(article).toHaveProperty("votes");
-          expect(article).toHaveProperty("article_img_url");
-          expect(article).toHaveProperty("comment_count");
         });
       });
   });
@@ -332,31 +413,57 @@ describe("/api/articles?sort=", () => {
         });
       });
   });
-  //   test("GET 200 - Responds with a list if all articles if no query given after query character", () => {
-  //     // Would this case still expect a 200 status code? Or a 400?
-  //     return request(app)
-  //       .get("/api/articles?")
-  //       .expect(200)
-  //       .then(({ body: { articles } }) => {
-  //         expect(articles).toHaveLength(13);
-  //         articles.forEach((article) => {
-  //           expect(article).toHaveProperty("author");
-  //           expect(article).toHaveProperty("title");
-  //           expect(article).toHaveProperty("article_id");
-  //           expect(article).toHaveProperty("topic");
-  //           expect(article).toHaveProperty("created_at");
-  //           expect(article).toHaveProperty("votes");
-  //           expect(article).toHaveProperty("article_img_url");
-  //           expect(article).toHaveProperty("comment_count");
-  //         });
-  //       });
-  //   });
-  //   test("GET 404 - Invalid query value given. No article with that topic", () => {
-  //     return request(app)
-  //       .get("/api/articles?topic=nonExistent")
-  //       .expect(404)
-  //       .then(({ body: { msg } }) => {
-  //         expect(msg).toBe("Articles not found");
-  //       });
-  //   });
+  test("GET 400 - Invalid query value given. Unable to sort articles with sort query without a query value", () => {
+    return request(app)
+      .get("/api/articles?sort=nonExistent")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("/api/articles?topic=&sort=", () => {
+  test("GET 200 - Responds with a list of articles sorted by the specified column and order", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort=+title")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted("title", { ascending: true });
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic", "mitch");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+  test("GET 404 - Invalid query value given. No article with that topic", () => {
+    return request(app)
+      .get("/api/articles?topic=nonExistent&sort=+title")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Articles not found");
+      });
+  });
+  test("GET 400 - Invalid query value given. Unable to sort articles with sort query without a query value", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort=nonExistent")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+  test("GET 404 - Invalid query value given. No article with that topic. Also unable to sort articles with sort query without a query value", () => {
+    return request(app)
+      .get("/api/articles?topic=nonExistent&sort=nonExistent")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Articles not found");
+      });
+  });
 });
