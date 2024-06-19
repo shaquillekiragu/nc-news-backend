@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+
 const healthcheck = require("./controllers/healthcheck.controller");
 const getTopics = require("./controllers/topics.controller");
 const getApi = require("./controllers/api.controller");
