@@ -1,10 +1,10 @@
+const request = require("supertest");
+require("jest-sorted");
 const app = require("../app.js");
 const db = require("../db/connection.js");
-const request = require("supertest");
 const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data/index.js");
 const endpointsList = require("../endpoints.json");
-require("jest-sorted");
 
 beforeEach(() => {
   return seed(data);
@@ -269,10 +269,10 @@ describe("/api/comments/:comment_id", () => {
   });
 });
 
-describe.only("/api/articles/:article_id/comments/:comment_id", () => {
+describe("/api/articles/:article_id/comments/:comment_id", () => {
   test("PATCH 200 - Responds with a comment with a correctly updated vote count", () => {
     return request(app)
-      .patch("/api/articles/1/comments/1")
+      .patch("/api/articles/9/comments/1")
       .send({ inc_votes: 1 })
       .expect(200)
       .then(({ body: { comment } }) => {
@@ -285,7 +285,7 @@ describe.only("/api/articles/:article_id/comments/:comment_id", () => {
   });
   test("PATCH 400 - Empty inc_votes object received", () => {
     return request(app)
-      .patch("/api/articles/1/comments/1")
+      .patch("/api/articles/9/comments/1")
       .send({})
       .expect(400)
       .then(({ body: { msg } }) => {
@@ -294,7 +294,7 @@ describe.only("/api/articles/:article_id/comments/:comment_id", () => {
   });
   test("PATCH 400 - Failing schema validation", () => {
     return request(app)
-      .patch("/api/articles/1/comments/1")
+      .patch("/api/articles/9/comments/1")
       .send({ inc_votes: "string" })
       .expect(400)
       .then(({ body: { msg } }) => {
@@ -303,7 +303,7 @@ describe.only("/api/articles/:article_id/comments/:comment_id", () => {
   });
 });
 
-describe.skip("/api/users", () => {
+describe("/api/users", () => {
   test("GET 200 - Responds with a list of all users", () => {
     return request(app)
       .get("/api/users")

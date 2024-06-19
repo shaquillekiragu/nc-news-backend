@@ -1,9 +1,8 @@
 const db = require("../db/connection");
 
-function fetchArticleById(article_id) {
-  return db
-    .query(
-      `SELECT articles.*, COUNT(comments.article_id) 
+async function fetchArticleById(article_id) {
+  const { rows } = await db.query(
+    `SELECT articles.*, COUNT(comments.article_id) 
       AS comment_count 
       FROM articles 
       LEFT JOIN comments
@@ -11,66 +10,55 @@ function fetchArticleById(article_id) {
       WHERE articles.article_id = $1
       GROUP BY articles.article_id 
       ORDER BY articles.created_at DESC;`,
-      [article_id]
-    )
-    .then(({ rows }) => {
-      if (!rows.length) {
-        return Promise.reject({ status: 404, msg: "Article not found" });
-      }
-      return rows[0];
-    });
+    [article_id]
+  );
+  if (!rows.length) {
+    return Promise.reject({ status: 404, msg: "Article not found" });
+  }
+  return rows[0];
 }
 
-function fetchCommentsByArticleId(article_id) {
-  return db
-    .query(
-      `SELECT comment_id, votes, created_at, author, body, article_id 
+async function fetchCommentsByArticleId(article_id) {
+  const { rows } = await db.query(
+    `SELECT comment_id, votes, created_at, author, body, article_id 
       FROM comments 
       WHERE article_id = $1 
       ORDER BY created_at DESC`,
-      [article_id]
-    )
-    .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Article not found" });
-      }
-      return rows;
-    });
+    [article_id]
+  );
+  if (rows.length === 0) {
+    return Promise.reject({ status: 404, msg: "Article not found" });
+  }
+  return rows;
 }
 
-function insertCommentByArticleId(username, body, article_id) {
-  return db
-    .query(
-      `INSERT INTO comments
+async function insertCommentByArticleId(username, body, article_id) {
+  const { rows } = await db.query(
+    `INSERT INTO comments
       (author, body, article_id)
       VALUES
       ($1, $2, $3)
       RETURNING *;`,
-      [username, body, article_id]
-    )
-    .then(({ rows }) => {
-      return rows[0];
-    });
+    [username, body, article_id]
+  );
+  return rows[0];
 }
 
-function updateVotesByArticleId(inc_votes, article_id) {
-  return db
-    .query(
-      `UPDATE articles
+async function updateVotesByArticleId(inc_votes, article_id) {
+  const { rows } = await db.query(
+    `UPDATE articles
       SET votes = votes + $1
       WHERE article_id = $2
       RETURNING *;`,
-      [inc_votes, article_id]
-    )
-    .then(({ rows }) => {
-      if (!rows.length) {
-        return Promise.reject({
-          status: 404,
-          msg: "Article not found",
-        });
-      }
-      return rows[0];
+    [inc_votes, article_id]
+  );
+  if (!rows.length) {
+    return Promise.reject({
+      status: 404,
+      msg: "Article not found",
     });
+  }
+  return rows[0];
 }
 
 module.exports = {

@@ -6,51 +6,56 @@ const {
 } = require("../models/articles.model");
 const fetchArticles = require("../models/fetchArticles.model");
 
-function getArticleById(request, response, next) {
-  const { article_id } = request.params;
-  fetchArticleById(article_id)
-    .then((article) => {
-      response.status(200).send({ article });
-    })
-    .catch(next);
+async function getArticleById(request, response, next) {
+  try {
+    const { article_id } = request.params;
+    const article = await fetchArticleById(article_id);
+    response.status(200).send({ article });
+  } catch (err) {
+    next(err);
+  }
 }
 
-function getArticles(request, response, next) {
-  const query = request.query;
-  fetchArticles(query)
-    .then((articles) => {
-      response.status(200).send({ articles });
-    })
-    .catch(next);
+async function getArticles(request, response, next) {
+  try {
+    const query = request.query;
+    const articles = await fetchArticles(query);
+    response.status(200).send({ articles });
+  } catch (err) {
+    next(err);
+  }
 }
 
-function getCommentsByArticleId(request, response, next) {
-  const { article_id } = request.params;
-  fetchCommentsByArticleId(article_id)
-    .then((comments) => {
-      response.status(200).send({ comments });
-    })
-    .catch(next);
+async function getCommentsByArticleId(request, response, next) {
+  try {
+    const { article_id } = request.params;
+    const comments = await fetchCommentsByArticleId(article_id);
+    response.status(200).send({ comments });
+  } catch (err) {
+    next(err);
+  }
 }
 
-function postCommentByArticleId(request, response, next) {
-  const { article_id } = request.params;
-  const { username, body } = request.body;
-  insertCommentByArticleId(username, body, article_id)
-    .then((comment) => {
-      response.status(201).send({ comment });
-    })
-    .catch(next);
+async function postCommentByArticleId(request, response, next) {
+  try {
+    const { article_id } = request.params;
+    const { username, body } = request.body;
+    const comment = await insertCommentByArticleId(username, body, article_id);
+    response.status(201).send({ comment });
+  } catch (err) {
+    next(err);
+  }
 }
 
-function patchVotesByArticleId(request, response, next) {
-  const { article_id } = request.params;
-  const { inc_votes } = request.body;
-  updateVotesByArticleId(inc_votes, article_id)
-    .then((article) => {
-      response.status(200).send({ article });
-    })
-    .catch(next);
+async function patchVotesByArticleId(request, response, next) {
+  try {
+    const { article_id } = request.params;
+    const { inc_votes } = request.body;
+    const article = await updateVotesByArticleId(inc_votes, article_id);
+    response.status(200).send({ article });
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports = {
