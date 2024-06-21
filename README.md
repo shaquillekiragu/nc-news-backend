@@ -1,4 +1,4 @@
-# NC Newspage Backend Server
+# NC News Backend Project
 
 ## Description
 
