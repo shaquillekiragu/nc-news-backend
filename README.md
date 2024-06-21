@@ -1,8 +1,8 @@
-# Reddit Newspage Backend Server
+# NC Newspage Backend Server
 
 ## Description
 
-This project is the backend of a Reddit-inspired newspage application, providing the data that the frontend of a completed full-stack application would request from it. As my first ever complete backend server project, I aim to use this as a demonstration of all my learning up to this point, as well as a display of my current capabilities and foundation for my learning journey in backend development.
+This project is the backend of a Reddit-inspired news application, providing the data for requests made by the corresponding frontend project via RESTful APIs. As my first ever complete backend server project, I aim to use this as a demonstration of all my learning up to this point, as well as a display of my current capabilities and foundation for my learning journey in backend development.
 
 ## Hosted Backend Server
 
@@ -22,7 +22,7 @@ You will need to have these versions or later for the following dependencies in 
 1. Clone this repository:
 
 ```
-https://github.com/shaquillekiragu/reddit-newspage-project.git
+https://github.com/shaquillekiragu/nc-news-backend.git
 ```
 
 2. Once you've opened the repo, at the repository's root create a `.env.test` and `.env.development` file, and declare the variable below in each .env file, assigning the corresponding values to each variable as shown below.
