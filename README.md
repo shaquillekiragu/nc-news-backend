@@ -4,16 +4,13 @@
 
 This project is the backend of a news-based social network application, providing the data for requests made by the corresponding frontend project via RESTful APIs. As my first ever complete backend server project, I aim to use this as a demonstration of all my learning up to this point, as well as a display of my current capabilities and foundation for my learning journey in backend development.
 
-
 ## Hosted Backend Server
 
 The link to the hosted version of this backend server: https://news-webpage-project.onrender.com
 
-
 ## Frontend Repository
 
 Link to the frontend GitHub repository of NC News: https://github.com/shaquillekiragu/nc-news-frontend
-
 
 ## Minimum Versions
 
@@ -21,7 +18,6 @@ You will need to have these versions or newer for the following technologies in 
 
 - Node.js - **v20.9.0** or newer
 - PostgreSQL - **v20.x** or later
-
 
 ## Installation
 
