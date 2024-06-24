@@ -8,11 +8,15 @@ This project is the backend of a news-based social network application, providin
 
 The link to the hosted version of this backend server: https://news-webpage-project.onrender.com
 
+## Frontend Repository
+
+Link to the frontend GitHub repository of NC News: https://github.com/shaquillekiragu/nc-news-frontend
+
 ## Minimum Versions
 
-You will need to have these versions or later for the following dependencies in order to run this project:
+You will need to have these versions or newer for the following technologies in order to run this project:
 
-- Node.js - **v14.18.0** or later
+- Node.js - **v20.9.0** or newer
 - PostgreSQL - **v20.x** or later
 
 ## Installation
@@ -61,10 +65,12 @@ Installation is now complete.
 
 ## Testing
 
-In order to test the api endpoints on this server, run the following command:
+In order to test the API endpoints on this server, run the following command:
 
 ```
 npm run test
+
+This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
 ```
 
 This command will run the integration tests for the api endpoints, as well as the utilities tests for the seeding functions.
