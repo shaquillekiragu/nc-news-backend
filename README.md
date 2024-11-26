@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is the backend of a news website, providing the data for requests made by the corresponding frontend project via RESTful APIs. The NC News database is hosted on ElephantSQL, with the server being hosted on Render. As my first ever complete backend server project, I aim to use this as a demonstration of all my learning up to this point, as well as a display of my current capabilities and foundation for my learning journey in backend development.
+This project is the backend of a news website, providing RESTful API with endpoints for managing articles, topics, users, and comments. Built with an MVC architecture, it features a PostgreSQL database pre-seeded with realistic data and supports seamless integration with the frontend. Comprehensive API testing is implemented using Jest and Supertest to ensure reliability and performance. The NC News database is hosted on ElephantSQL, with the server being hosted on Render. As my first ever complete backend server project, I aim to use this as a demonstration of all my learning up to this point, as well as a display of my current capabilities and foundation for my learning journey in backend development.
 
 ## Hosted Backend Server
 
