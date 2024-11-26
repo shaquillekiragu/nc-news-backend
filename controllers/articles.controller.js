@@ -1,5 +1,6 @@
 const {
   fetchArticleById,
+  insertArticle,
   fetchCommentsByArticleId,
   insertCommentByArticleId,
   updateVotesByArticleId,
@@ -21,6 +22,25 @@ async function getArticles(request, response, next) {
     const query = request.query;
     const articles = await fetchArticles(query);
     response.status(200).send({ articles });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function postArticle(request, response, next) {
+  try {
+    const { title, topic, username, body, created_at, votes, article_img_url } =
+      request.body;
+    const article = await insertArticle(
+      title,
+      topic,
+      username,
+      body,
+      created_at,
+      votes,
+      article_img_url
+    );
+    response.status(201).send({ article });
   } catch (err) {
     next(err);
   }
@@ -61,6 +81,7 @@ async function patchVotesByArticleId(request, response, next) {
 module.exports = {
   getArticleById,
   getArticles,
+  postArticle,
   getCommentsByArticleId,
   postCommentByArticleId,
   patchVotesByArticleId,

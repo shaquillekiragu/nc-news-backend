@@ -18,6 +18,26 @@ async function fetchArticleById(article_id) {
   return rows[0];
 }
 
+async function insertArticle(
+  title,
+  topic,
+  username,
+  body,
+  created_at,
+  votes,
+  article_img_url
+) {
+  const { rows } = db.query(
+    `INSERT INTO articles
+      (title, topic, author, body, created_at, votes, article_img_url)
+      VALUES
+      ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *;`,
+    [title, topic, username, body, created_at, votes, article_img_url]
+  );
+  return rows[0];
+}
+
 async function fetchCommentsByArticleId(article_id) {
   const { rows } = await db.query(
     `SELECT comment_id, votes, created_at, author, body, article_id 
@@ -63,6 +83,7 @@ async function updateVotesByArticleId(inc_votes, article_id) {
 
 module.exports = {
   fetchArticleById,
+  insertArticle,
   fetchCommentsByArticleId,
   insertCommentByArticleId,
   updateVotesByArticleId,
