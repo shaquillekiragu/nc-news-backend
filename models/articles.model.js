@@ -27,7 +27,7 @@ async function insertArticle(
   votes,
   article_img_url
 ) {
-  const { rows } = db.query(
+  const { rows } = await db.query(
     `INSERT INTO articles
       (title, topic, author, body, created_at, votes, article_img_url)
       VALUES
