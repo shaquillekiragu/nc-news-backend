@@ -52,7 +52,7 @@ npm install
 4. Next, create the test and development databases by running:
 
 ```
-npm run setup-dbs
+npm run setup-db
 ```
 
 5. And now seed the databases with this command:
